@@ -1,1 +1,1 @@
-Create your own stickers from photo
+Create your own stickers from photos
