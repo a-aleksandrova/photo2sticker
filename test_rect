@@ -1,10 +1,12 @@
-import pygame
+import pygame as pg
+filename = "target.jpg"
 def get_rects():
     x = 100
     y = 100
     pg.init()
-    screen = pg.display.set_mode((640, 480))
-    clock = pg.time.Clock()
+    image = pg.image.load(filename)
+    width, height = image.get_rect().size
+    window = pg.display.set_mode((width, height))
     rect = pg.Rect(100, 100, 161, 100)
     rect_selected = False
 
@@ -14,27 +16,26 @@ def get_rects():
             if event.type == pg.QUIT:
                 done = True
             elif event.type == pg.MOUSEBUTTONDOWN:
-                # Set rect_selected to True when the user clicks on the rect.
+                # Изменить rect_selected на True когда нажатие происходит внутри прямоугольника.
                 if rect.collidepoint(event.pos):
                     rect_selected = True
             elif event.type == pg.MOUSEBUTTONUP:
                 rect_selected = False
             elif event.type == pg.MOUSEMOTION:
                 if rect_selected:
-                    if pg.mouse.get_pressed()[2] == 1:
-                        # Simply adjust the width and the height of the screen
-                        # by subtracting the relative mouse movement.
+                    if pg.mouse.get_pressed()[2] == 1: # Правая кнопка мыши нажата
+                        # Изменить ширину и высоту прямоугольника относительно движения мыши.
                         rect.w += event.rel[0]
                         rect.h += event.rel[1]
-                        # 10*10 px is the minimal size, so that the rect can
-                        # still be clicked.
+                        # 10 на 10 минимальный размер
                         rect.w = max(rect.w, 10)
                         rect.h = max(rect.h, 10)
-                    if pg.mouse.get_pressed()[0] == 1: # Left mouse button pressed.
+                    if pg.mouse.get_pressed()[0] == 1: # Левая кнопка мыши нажата
+                        # Переместить прямоугольник за мышью.
                         rect.x += event.rel[0]
                         rect.y += event.rel[1]
-        screen.fill((30, 30, 30))
-        pg.draw.rect(screen, (0, 100, 250), rect, 2)
+        window.blit(image, (0, 0))
+        pg.draw.rect(window, (0, 100, 250), rect, 2)
         pg.display.flip()
-
-get_rects()
+    return rect[0], rect[1], rect[0]+rect[2], rect[1]+rect[3] #Возвращает координаты углов
+print(get_rects())
