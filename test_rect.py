@@ -1,8 +1,6 @@
 import pygame as pg
 filename = "target.jpg"
 def get_rects():
-    x = 100
-    y = 100
     pg.init()
     image = pg.image.load(filename)
     width, height = image.get_rect().size
