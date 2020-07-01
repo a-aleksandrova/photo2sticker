@@ -1,8 +1,7 @@
 import pygame as pg
-filename = "target.jpg"
-def get_rects():
+
+def get_rects(image):
     pg.init()
-    image = pg.image.load(filename)
     width, height = image.get_rect().size
     window = pg.display.set_mode((width, height))
     rect = pg.Rect(100, 100, 161, 100)
@@ -35,5 +34,6 @@ def get_rects():
         window.blit(image, (0, 0))
         pg.draw.rect(window, (0, 100, 250), rect, 2)
         pg.display.flip()
+    pg.quit()
+
     return rect[0], rect[1], rect[0]+rect[2], rect[1]+rect[3] #Возвращает координаты углов
-print(get_rects())
