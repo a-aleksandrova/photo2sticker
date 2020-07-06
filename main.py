@@ -5,7 +5,7 @@ from minor_features import*
 import cv2 as cv
 import numpy as np
 
-filename = 'ada.png'
+filename = 'a.jpg'
 
 img = getPngImg(filename)
 img = setNormSize(img)
@@ -43,13 +43,15 @@ while feedback == 'y':
     manual_mode = getFeedback(img_with_contour, 'Does the border still need to be changed?[y/n]')
     feedback = manual_mode
 
-
 fg_img = remoweBg(img, fg_mask)
-result = showContour(fg_img, fg_mask, color=black, flag='draw')
+square_img = cropToSquare(fg_img, rectangle)
+square_mask = cropToSquare(fg_mask, rectangle)
+result = showContour(square_img, square_mask, color=black, flag='draw')
 
 smooth_feedback = getFeedback(result, 'Smooth image?[y/n]')
 if smooth_feedback == 'y':
     result = smoothing(result)
+
 
 finish_feedback = getFeedback(result, 'Save the result?[y/n]')
 if finish_feedback == 'y':

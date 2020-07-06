@@ -52,3 +52,20 @@ def getFeedback(img, text):
     cv.destroyWindow('img')
 
     return answer
+
+def cropToSquare(img, rectangle):
+    x, y, x1, y1 = rectangle
+    img = img[y:y1, x:x1]
+
+    rows, cols = img.shape[0:2]
+    x = max(rows, cols)
+    if x == rows:
+        indent_c = (rows - cols) // 2 + 22
+        indent_r = (rows - cols) % 2 + 22
+    else:
+        indent_r = (cols - rows) // 2 + 22
+        indent_c = (rows - cols) % 2 + 22
+
+    res = cv.copyMakeBorder(img, indent_r, indent_r, indent_c, indent_c, cv.BORDER_CONSTANT)
+
+    return res
