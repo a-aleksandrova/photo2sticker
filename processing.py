@@ -16,7 +16,6 @@ def getMask(mask, markers=None ,flag=None):
         mask[markers == 255] = 255
         transp_mask = mask
 
-
     return transp_mask
 
 
@@ -42,11 +41,10 @@ def showContour(img, mask, color=crimson, flag='show'):
 
     return img
 
+
 def smoothing(img):
     blur = cv.bilateralFilter(img[:, :, :3], 15, 30, 30)
     img[:, :, :3] = blur
 
     return img
-
-
 
