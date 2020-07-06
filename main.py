@@ -47,6 +47,9 @@ while feedback == 'y':
 fg_img = remoweBg(img, fg_mask)
 result = showContour(fg_img, fg_mask, color=black, flag='draw')
 
+smooth_feedback = getFeedback(result, 'Smooth image?[y/n]')
+if smooth_feedback == 'y':
+    result = smoothing(result)
 
 finish_feedback = getFeedback(result, 'Save the result?[y/n]')
 if finish_feedback == 'y':

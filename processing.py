@@ -42,5 +42,11 @@ def showContour(img, mask, color=crimson, flag='show'):
 
     return img
 
+def smoothing(img):
+    blur = cv.bilateralFilter(img[:, :, :3], 15, 30, 30)
+    img[:, :, :3] = blur
+
+    return img
+
 
 
