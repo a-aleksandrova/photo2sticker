@@ -5,7 +5,7 @@ from minor_features import*
 import cv2 as cv
 import numpy as np
 
-filename = 'ada6.jpg'
+filename = 'ada.png'
 
 img = getPngImg(filename)
 img = setNormSize(img)
@@ -18,14 +18,15 @@ bgdModel = np.zeros((1, 65), np.float64)
 fgdModel = np.zeros((1, 65), np.float64)
 cv.grabCut(img, mask, rectangle, bgdModel, fgdModel, 5, cv.GC_INIT_WITH_RECT)
 
-first_fg_mask = getMask(mask)
-img_with_contour = showContour(img, first_fg_mask)
+fg_mask = getMask(mask)
+img_with_contour = showContour(img, fg_mask)
+
 
 feedback = getFeedback(img_with_contour, 'Do you want to edit the borders?[y/n]')
 manual_mode = None
 while feedback == 'y':
     sf_img_with_contour = nparray2surfase(img_with_contour)
-    print('Orange for fg\nBlue for bg\nChange color alt+l')
+    print('orange -- for fg\nblue -- for bg\nalt+l -- change color\n+- -- change thickness')
     sf_markers = getMarker(sf_img_with_contour) #run paint
     bgr_markers = surface2nparray(sf_markers)
     markers = bgr_markers[:,:,2] #get red channel
@@ -43,11 +44,9 @@ while feedback == 'y':
     feedback = manual_mode
 
 
-result = remoweBg(img, fg_mask)
+fg_img = remoweBg(img, fg_mask)
+result = showContour(fg_img, fg_mask, color=black, flag='draw')
 
-contour_feedback = getFeedback(result, 'Add contour?[y/n]')
-if contour_feedback == 'y':
-    result = showContour(result, fg_mask, color=(200, 213, 48, 255))
 
 finish_feedback = getFeedback(result, 'Save the result?[y/n]')
 if finish_feedback == 'y':
@@ -58,3 +57,4 @@ if finish_feedback == 'y':
 
 elif finish_feedback == 'n':
     print('Result not saved')
+

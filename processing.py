@@ -1,7 +1,11 @@
 import numpy as np
 import cv2 as cv
 
-kernel = np.ones((5,5), np.uint8)
+kernel = np.ones((5, 5), np.uint8)
+orange = (11, 159, 255, 255)
+black = (0, 0, 0, 255)
+white = (255, 255, 255, 255)
+crimson = (93, 11, 217, 255)
 
 def getMask(mask, markers=None ,flag=None):
     if flag == None:
@@ -23,9 +27,20 @@ def remoweBg(img, mask):
     return bgra_img
 
 
-def showContour(img, mask, color=(11, 159, 255, 255)):
+def showContour(img, mask, color=crimson, flag='show'):
     img = img.copy()
+    mask = cv.dilate(mask, np.ones((2, 2), np.uint8))
+    mask = cv.medianBlur(mask, 7)
     contours, _ = cv.findContours(mask, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
-    cv.drawContours(img, contours, -1, color, 2, cv.LINE_4, _, 2)
+    cv.drawContours(img, contours, -1, color, 2, cv.LINE_AA, _, 2)
+
+    if flag == 'draw':
+        d_mask = cv.dilate(mask, np.ones((17, 17), np.uint8))
+        blur = cv.medianBlur(d_mask, 11)
+        contour = cv.subtract(blur, mask)
+        img[contour>0] = white
 
     return img
+
+
+
