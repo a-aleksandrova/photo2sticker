@@ -5,7 +5,7 @@ from minor_features import*
 import cv2 as cv
 import numpy as np
 
-filename = 'a.jpg'
+filename = 'ks.jpg'
 
 img = getPngImg(filename)
 img = setNormSize(img)
@@ -26,7 +26,7 @@ feedback = getFeedback(img_with_contour, 'Do you want to edit the borders?[y/n]'
 manual_mode = None
 while feedback == 'y':
     sf_img_with_contour = nparray2surfase(img_with_contour)
-    print('orange -- for fg\nblue -- for bg\nalt+l -- change color\n+- -- change thickness')
+    print('orange -- for fg\nblue -- for bg\nalt -- change color\n+- -- change thickness')
     sf_markers = getMarker(sf_img_with_contour) #run paint
     bgr_markers = surface2nparray(sf_markers)
     markers = bgr_markers[:,:,2] #get red channel
@@ -43,10 +43,20 @@ while feedback == 'y':
     manual_mode = getFeedback(img_with_contour, 'Does the border still need to be changed?[y/n]')
     feedback = manual_mode
 
+
 fg_img = remoweBg(img, fg_mask)
-square_img = cropToSquare(fg_img, rectangle)
-square_mask = cropToSquare(fg_mask, rectangle)
-result = showContour(square_img, square_mask, color=black, flag='draw')
+
+crop_feedback = getFeedback(fg_img, 'Crop the image?[y/n]')
+if crop_feedback == 'y':
+    fg_img, fg_mask = cropImgMask(fg_img, fg_mask)
+
+fg_img = cv.copyMakeBorder(fg_img, 30, 30, 30, 30, cv.BORDER_CONSTANT)
+fg_mask = cv.copyMakeBorder(fg_mask, 30, 30, 30, 30, cv.BORDER_CONSTANT)
+
+norm_img = setNormSize(fg_img)
+norm_mask = setNormSize(fg_mask)
+
+result = showContour(norm_img, norm_mask, color=black, thikhess=3, flag='draw')
 
 smooth_feedback = getFeedback(result, 'Smooth image?[y/n]')
 if smooth_feedback == 'y':
@@ -62,4 +72,5 @@ if finish_feedback == 'y':
 
 elif finish_feedback == 'n':
     print('Result not saved')
+
 

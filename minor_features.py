@@ -1,15 +1,19 @@
-from math import sqrt
 import cv2 as cv
-import pygame as pg
+from test_rect import*
 
-def setNormSize(img):
-    norm = 160000
-    x, y = img.shape[0:2]
-    k = sqrt((x * y) / norm)
-    x, y = int(x // k), int(y // k)
-    resize_img = cv.resize(img, (y, x))
 
-    return resize_img
+def setNormSize(img, norm=512):
+    x, y = img.shape[:2]
+    if x > y:
+        x1 = norm
+        y1 = int(y // (x / norm))
+    else:
+        y1 = norm
+        x1 = int(x // (y / norm))
+
+    resized_img = cv.resize(img, (y1, x1))
+
+    return resized_img
 
 def getPngImg(filename):
     format = filename.split('.')[-1]
@@ -53,19 +57,12 @@ def getFeedback(img, text):
 
     return answer
 
-def cropToSquare(img, rectangle):
+
+def cropImgMask(img, mask):
+    sf_img = nparray2surfase(img)
+    rectangle = get_rects(sf_img)
     x, y, x1, y1 = rectangle
     img = img[y:y1, x:x1]
+    mask = mask[y:y1, x:x1]
 
-    rows, cols = img.shape[0:2]
-    x = max(rows, cols)
-    if x == rows:
-        indent_c = (rows - cols) // 2 + 22
-        indent_r = (rows - cols) % 2 + 22
-    else:
-        indent_r = (cols - rows) // 2 + 22
-        indent_c = (rows - cols) % 2 + 22
-
-    res = cv.copyMakeBorder(img, indent_r, indent_r, indent_c, indent_c, cv.BORDER_CONSTANT)
-
-    return res
+    return img, mask
